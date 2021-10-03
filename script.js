@@ -10,8 +10,8 @@ async function main(){
     ori_data = await loadData(url);
 
     var margin = {top: 20, right: 10, bottom: 20, left: 10};
-    const width = 700 - margin.left - margin.right;
-    const height = 700 - margin.top - margin.bottom;
+    const width = 650 - margin.left - margin.right;
+    const height = 650 - margin.top - margin.bottom;
     const svg = d3.select(".bar-chart")
                     .append('svg')
                     .attr('width', width + margin.left + margin.right)
@@ -32,23 +32,39 @@ async function main(){
     const xScale = d3.scaleBand()
                         .domain(company)
                         .rangeRound([0, width])
-                        .paddingInner(0.1);
 
     const yScale = d3.scaleLinear()
-                    .domain(storeRange[1], 0)
+                    .domain([storeRange[1], 0])
                     .range([0, height]);
+
+    const xAxis = d3.axisBottom()
+	.scale(xScale);
+
+    const yAxis = d3.axisLeft()
+	.scale(yScale);
+
+    svg.append("g")
+	.attr("class", "axis x-axis")
+    .attr("transform", `translate(0, ${height})`)
+	.call(xAxis);
+    
+    svg.append("g")
+	.attr("class", "axis y-axis")
+    .attr("transform", `translate(0, ${width}`)
+	.call(yAxis);
+
 
     svg.selectAll("barChart")
         .data(ori_data)
         .enter()
         .append("rect")
         .attr("class", "bar")
-        .attr("y", height)
+        .attr("y", d => yScale(d.stores))
         .attr("x", function(d, i){
             return(i * xScale.bandwidth());
         })
-        .attr("width", xScale.bandwidth())
-        .attr("height", d => yScale(d.stores))
+        .attr("width", xScale.bandwidth() - 5)
+        .attr("height", d => height - yScale(d.stores))
         .attr("fill", "rgb(243, 153, 50)")
 }
 
