@@ -9,7 +9,7 @@ async function main(){
     const url = "coffee-house-chains.csv";
     ori_data = await loadData(url);
 
-    var margin = {top: 20, right: 10, bottom: 20, left: 10};
+    var margin = {top: 20, right: 10, bottom: 20, left: 45};
     const width = 650 - margin.left - margin.right;
     const height = 650 - margin.top - margin.bottom;
     const svg = d3.select(".bar-chart")
@@ -53,6 +53,11 @@ async function main(){
     .attr("transform", `translate(0, ${width}`)
 	.call(yAxis);
 
+    svg.append("text")
+        .attr("class", "y-axis-title")
+        .attr('x', -15)
+        .attr('y', -5)
+        .text("Stores")
 
     svg.selectAll("barChart")
         .data(ori_data)
@@ -61,11 +66,16 @@ async function main(){
         .attr("class", "bar")
         .attr("y", d => yScale(d.stores))
         .attr("x", function(d, i){
-            return(i * xScale.bandwidth());
+            return(i * xScale.bandwidth() + 0.5);
         })
-        .attr("width", xScale.bandwidth() - 5)
+        .attr("width", xScale.bandwidth() - 7)
         .attr("height", d => height - yScale(d.stores))
-        .attr("fill", "rgb(243, 153, 50)")
+        .attr("fill", "rgb(88, 142, 192)")
+
+
+    function update(ori_data){
+
+    }
 }
 
 main();
